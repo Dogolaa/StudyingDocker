@@ -1,6 +1,8 @@
 # Introdução ao Docker
 
-## O que são containers?
+## Containers
+
+### O que são containers?
 
 <br>
 
@@ -21,11 +23,11 @@ Principais Características:
 
 <br>
 
-## Containers vs Máquinas Virtuais
+### Containers vs Máquinas Virtuais
 
 ![alt text](./readmeImages/containersVsVm.png)
 
-## Docker no CMD
+### Docker no CMD
 
 ```sh
 # run executa um container, e depois passa-se o nome da imagem, no caso, hello-world
@@ -82,4 +84,61 @@ docker rm -f $(docker ps -a -q)
 
 # Para expor uma porta usa-se o comando abaixo, basicamente está dizendo "pegue a porta 80 do container e mapeie-a para a minha porta 8080"
 docker run -p 8080:80 nginx
+```
+
+## Volumes e Bind-Mounts
+
+### Volumes vs Bind-Mounts
+
+"Bind-Mount, basicamente, pega uma pasta do seu computador e duplica para dentro do container, poder gerar conflitos, mas tem latência baixa, ideal para ambientes de desenvolvimento, já o volume é algo gerenciado pelo docker, não é compartilhada um pasta usual do computador, usa-se quando queremos salvar em um lugar onde o computador não tem acesso, aumentando a segurança, usado também para persistência de dados, ideal para ambientes de produção."
+
+### Bind-Mounts
+
+```sh
+# -v serve para indicar a pasta que será compartilhada e a de destino no container
+docker run -d -p 8080:80 -v $(pwd)/my_nginx_html:/usr/share/nginx/html nginx
+```
+
+Posso remover o container sem perder os arquivos de dentro do meu computador.
+
+<br>
+
+> Caminho mais completo
+
+```sh
+docker run -d -p 8080:80 --mount type=bind,source=$(pwd)/my_nginx_html,target=/usr/share/nginx/html nginx
+```
+
+### Volumes
+
+```sh
+# Comando para criar um volume
+docker volume create my_volume
+
+# Exibir os volumes da máquinas
+docker volume ls
+
+# Apagar todos os volumes
+dokcer volume prune
+
+# Para verificar todas as informações de um volume
+docker volume inspect my_volume
+
+# Para compartilhar pastas com do container através do volume
+docker run -d -p 808080 -v my_volume:/usr/share/nginx/html nginx
+# Copiando o arquivo de dentro do computador e jogando para o container
+docker cp $(pwd)/my_nginx_html/index.html NOME_DO_CONTAINER:/usr/share/nginx/html
+```
+
+Posso remover o container, os dados que estão no volume não serão perdidos.
+
+<br>
+
+```sh
+# Para realizar backups
+docker run --rm -v my_volumes:/data -v $(pwd)/Module1/backup_host:/backup busybox tar czf /backup/backup.tar.gz / data
+# Traduzindo o comando acima: vá para a pasta /data que é um volume montado, compacte-a dentro do /backup/backup.tar.gz e ele será exibido na pasta indicada do meu computador como bind-mount
+
+# Para restaurar o backup
+docker run --rm -v my_volumes:/data -v $(pwd)/Module1/backup_host:/backup busybox tar xzf /backup/backup.tar.gz -C /
 ```
