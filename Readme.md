@@ -119,7 +119,7 @@ docker volume create my_volume
 docker volume ls
 
 # Apagar todos os volumes
-dokcer volume prune
+docker volume prune
 
 # Para verificar todas as informações de um volume
 docker volume inspect my_volume
@@ -142,3 +142,40 @@ docker run --rm -v my_volumes:/data -v $(pwd)/Module1/backup_host:/backup busybo
 # Para restaurar o backup
 docker run --rm -v my_volumes:/data -v $(pwd)/Module1/backup_host:/backup busybox tar xzf /backup/backup.tar.gz -C /
 ```
+
+## Imagens
+
+Dica: Não use latest, use a versão específica, busque imagens leves, além de leves são menos vulneráveis.
+
+```sh
+# Para exibir todas as imagens criadas
+docker images
+
+# Para remover imagens, necessário matar o container vinculado a ela
+docker rmi NOME_DA_IMAGEM
+
+# Para remover imagens de maneira forçada
+docker rmi -f NOME_DA_IMAGEM
+
+# Para verificar informações importantes de images
+docker inspect NOME_DA_IMAGEM
+
+# Para verificar informações específicas
+docker inspect --format='{{.id}}' NOME_DA_IMAGEM
+
+# Exibe todas as imagens do registro de containers do Docker
+docker search nginx
+
+# Para baixar imagens
+docker pull nginx:1.20
+
+# Apagar todas as imagens sem containers associados a elas
+docker image prune
+
+# Apagar todas as imagens
+docker image prune -a
+```
+
+### DockerHub
+
+https://hub.docker.com/
